@@ -7,14 +7,14 @@ class Collection extends React.Component {
     super(props);
     this.state = {
       collections: [],
-      images: null,
+      imagesList: null,
       loading: true,
     };
   }
 
-  componentDidMount() {
-    this.getCollection();
-    this.getCollectionImage();
+  async componentDidMount() {
+    /* await this.getCollection();
+    await this.getCollectionImage(); */
   }
 
   getCollection = async () => {
@@ -33,28 +33,23 @@ class Collection extends React.Component {
   };
 
   getCollectionImage = async () => {
-    await getCollectionImages({ coll_Id: "304856", per_page: 30 })
-      .then((response) => {
-        console.log("eachcollection", response);
-        this.setState({
-          images: [...response],
-          loading: false,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+    let images = this.state.collections.map(async (item, idx) => {
+      const response = await getCollectionImages({
+        coll_Id: item.id,
+        per_page: 30,
       });
+      return { item: item.id, title: item.title, images: response };
+    });
+    let data = await Promise.all(images).then((imagePromise) => imagePromise);
+    this.setState({
+      imagesList: data,
+      //loading: false,
+    });
   };
   render() {
     console.log("imagesCollection", this.state);
-    const { loading, images, collections } = this.state;
-    return (
-      <>
-        {!loading && (
-          <CollectionTile collection={collections} singleCollection={images} />
-        )}
-      </>
-    );
+    const { loading, imagesList } = this.state;
+    return <>{!loading && <CollectionTile imgCollection={imagesList} />}</>;
   }
 }
 

@@ -14,7 +14,6 @@ export const getCollection = () => {
       headers: headers,
     })
     .then((response) => {
-      console.log("response", response.data);
       return response.data;
     })
     .catch((err) => {
@@ -28,7 +27,6 @@ export const getCollectionImages = ({ coll_Id, per_page }) => {
       headers: headers,
     })
     .then((response) => {
-      console.log("response", response.data);
       return response.data;
     })
     .catch((err) => {
